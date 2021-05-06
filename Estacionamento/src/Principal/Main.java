@@ -1,5 +1,9 @@
 package Principal;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -19,24 +23,41 @@ public class Main {
 		int opcao, opcaoMarca;
 		Scanner teclado = new Scanner(System.in);
 
-		// -> dummy data marcas
+		// -> dummy data modelo
+		final Modelo mod1 = new Modelo("sandero");
+		final Modelo mod2 = new Modelo("duster");
+		final Modelo mod3 = new Modelo("I8");
+		final Modelo mod4 = new Modelo("CLASSE A");
+		final Modelo mod5 = new Modelo("CLASSE GLE");
+		final Modelo mod6 = new Modelo("tt");
+
+		// -> dummy data marca
 		final Marca m1 = new Marca("renault");
 		final Marca m2 = new Marca("bmw");
 		final Marca m3 = new Marca("mercedes");
 		final Marca m4 = new Marca("audi");
 
-		final Carro c1 = new Carro("AAAA-888");
-		final Carro c2 = new Carro("AAAA-777");
-		final Carro c3 = new Carro("AAAA-666");
-		final Carro c4 = new Carro("AAAA-555");
+		// -> dummy data carro
+		final Carro c1 = new Carro("AAAA-888", mod1);
+		final Carro c2 = new Carro("AAAA-777", mod2);
+		final Carro c3 = new Carro("AAAA-666", mod3);
+		final Carro c4 = new Carro("AAAA-555", mod4);
 
-		m1.adicionarModelo("sandero");
-		m1.adicionarModelo("duster");
-		m2.adicionarModelo("I8");
-		m3.adicionarModelo("Classe GLE");
-		m3.adicionarModelo("Classe A");
-		m3.adicionarModelo("Classe CLA");
+		// -> dummy data vagas
+		vagas[0] = c1;
+		vagas[1] = c2;
+		vagas[2] = c3;
+		vagas[3] = c4;
 
+		// -> dummy data - adicionar modelo (mod) na marca
+		m1.adicionarModelo(mod1.getNome());
+		m1.adicionarModelo(mod2.getNome());
+		m2.adicionarModelo(mod3.getNome());
+		m3.adicionarModelo(mod4.getNome());
+		m3.adicionarModelo(mod5.getNome());
+		m4.adicionarModelo(mod6.getNome());
+
+		// -> dummy data - adicionar modelo (mod) na marca
 		marcas.add(m1);
 		marcas.add(m2);
 		marcas.add(m3);
@@ -98,10 +119,12 @@ public class Main {
 					cadastrarModelo();
 					break;
 				case 7:
-					System.out.println("FALTA FAZER - Opção 5 escolhida");
+					relatorioGerencial();
 					break;
 				case 0:
 					System.exit(0);
+				default:
+					break;
 			}
 		} while (opcao != 0);
 
@@ -109,12 +132,36 @@ public class Main {
 	}
 
 	private static void entradaCarro() {
+		Carro novoCarro = new Carro("0000");
 		int opcaoMarca, opcaoNewModelo;
 		String newModelo;
 		Scanner teclado = new Scanner(System.in);
+		int y = 0;
+		int t = vagas.length;
+
+		for (Carro c : vagas) {
+			if (c != null) {
+				y++;
+			}
+		}
+		int total = t - y;
+
+		System.out.println();
+		System.out.println("Número de vagas ocupadas: " + y);
+		System.out.println("Número de vagas disponíveis: " + total);
+
+		System.out.println();
+		System.out.println("Qual é a placa do seu carro? (digite neste padrão ZZZZ-999)");
+		System.out.print(">> ");
+		String placaCarro = teclado.nextLine();
+		System.out.println("Placa digitada: " + placaCarro);
+		novoCarro.setPlaca(placaCarro);
 
 		System.out.println();
 		System.out.println("Qual é a marca do seu carro? (digite o número)");
+		for (int i = 0; i < marcas.size(); i++) {
+			System.out.println(i + " -> " + marcas.get(i).getNome());
+		}
 		System.out.print(">> ");
 		opcaoMarca = teclado.nextInt();
 		Marca opcao = marcas.get(opcaoMarca);
@@ -147,6 +194,7 @@ public class Main {
 				System.out.print("\n");
 				System.out.println("Você digitou " + newModelo + " como novo modelo");
 				opcao.adicionarModelo(newModelo);
+				novoCarro.setModelo(new Modelo(newModelo));
 				break;
 			case 2:
 				System.out.println();
@@ -158,13 +206,126 @@ public class Main {
 				int escolhaModelo = teclado.nextInt();
 				System.out.print("\n");
 				System.out.println("Você escolheu o modelo " + modelo.get(escolhaModelo).getNome());
+				novoCarro.setModelo(modelo.get(escolhaModelo));
+			default:
+				break;
 		}
-		//TODO FAZER CADASTRO DO HORARIO DA ENTRADA DO CARRO
+
+		System.out.println();
+		System.out.println("Qual horário da entrada do carro: ");
+		System.out.println("(1) Entrada agora                 ");
+		System.out.println("(2) Setar tempo de entrada        ");
+		System.out.print(">> ");
+		int tipoEntrada = teclado.nextInt();
+		System.out.println();
+
+		switch (tipoEntrada) {
+			case 1:
+				System.out.println();
+				System.out.println("A entrada do carro foi: "
+						+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
+				novoCarro.setHoraEntrada(LocalDateTime.now());
+				break;
+			case 2:
+				System.out.println("Forneça o dia da entrada: (exemplo 01...31)");
+				System.out.print(">> ");
+				int entradaDia = teclado.nextInt();
+				System.out.println();
+				System.out.println("Forneça o mês da entrada: (exemplo 01...12)");
+				System.out.print(">> ");
+				int entradaMes = teclado.nextInt();
+				System.out.println();
+				System.out.println("Forneça o ano da entrada: (exemplo 2000...2021)");
+				System.out.print(">> ");
+				int entradaAno = teclado.nextInt();
+				System.out.println();
+				System.out.println("Forneça a hora da entrada: (exemplo 00...23)");
+				System.out.print(">> ");
+				int entradaHora = teclado.nextInt();
+				System.out.println();
+				System.out.println("Forneça o minuto da entrada: (exemplo 00...60)");
+				System.out.print(">> ");
+				int entradaMinuto = teclado.nextInt();
+				System.out.println();
+				System.out.println(
+						entradaDia + "/" + entradaMes + "/" + entradaAno + " - " + entradaHora + ":" + entradaMinuto);
+				novoCarro.setHoraEntrada(
+						LocalDateTime.of(entradaAno, entradaMes, entradaDia, entradaHora, entradaMinuto));
+				break;
+			default:
+				break;
+		}
+		int lastVaga = 0;
+		for (Carro c : vagas) {
+			if (c != null) {
+				lastVaga++;
+			}
+		}
+		vagas[lastVaga] = novoCarro;
 	}
 
 	private static float saidaCarro() {
+		Scanner teclado = new Scanner(System.in);
 		float preco = 0;
-		//TODO FAZER CADASTRO DO HORARIO DA SAIDA DO CARRO
+
+		for (int i = 0; i < vagas.length; i++) {
+			if (vagas[i] != null) {
+				System.out.println("(" + i + ") " + vagas[i].getPlaca() + " - " + vagas[i].getModelo().getNome());
+			}
+		}
+		System.out.println();
+		System.out.println("Escolha qual carro você deseja retirar: (escolha pelo número)");
+		System.out.print(">> ");
+		int numRetirada = teclado.nextInt();
+		System.out.println();
+		
+		System.out.println();
+		System.out.println("Qual horário da saída do carro:  ");
+		System.out.println("(1) Saída agora                  ");
+		System.out.println("(2) Setar tempo de saída         ");
+		System.out.print(">> ");
+		int tipoSaida = teclado.nextInt();
+		System.out.println();
+
+		switch (tipoSaida) {
+			case 1:
+				System.out.println();
+				LocalDateTime saida = LocalDateTime.now();
+				System.out.println("A saida do carro foi: " + saida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
+				vagas[numRetirada].setHoraSaida(saida);
+				System.out.println("Valor a ser pago: " + vagas[numRetirada].saidaCarro());
+				vagas[numRetirada] = null;
+				break;
+			case 2:
+				System.out.println("Forneça o dia da saida: (exemplo 01...31)");
+				System.out.print(">> ");
+				int saidaDia = teclado.nextInt();
+				System.out.println();
+				System.out.println("Forneça o mês da saida: (exemplo 01...12)");
+				System.out.print(">> ");
+				int saidaMes = teclado.nextInt();
+				System.out.println();
+				System.out.println("Forneça o ano da saida: (exemplo 2000...2021)");
+				System.out.print(">> ");
+				int saidaAno = teclado.nextInt();
+				System.out.println();
+				System.out.println("Forneça a hora da saida: (exemplo 00...23)");
+				System.out.print(">> ");
+				int saidaHora = teclado.nextInt();
+				System.out.println();
+				System.out.println("Forneça o minuto da saida: (exemplo 00...60)");
+				System.out.print(">> ");
+				int saidaMinuto = teclado.nextInt();
+				System.out.println();
+				System.out.println(saidaDia + "/" + saidaMes + "/" + saidaAno + " - " + saidaHora + ":" + saidaMinuto);
+				vagas[numRetirada].set2HoraSaida(saidaDia, saidaMes, saidaAno, saidaHora, saidaMinuto);
+				System.out.println("Valor a ser pago: " + vagas[numRetirada].saidaCarro());
+				vagas[numRetirada] = null;
+				break;
+			default:
+				break;
+		}
+
 		return preco;
 	}
 
@@ -210,4 +371,19 @@ public class Main {
 
 		// TODO COMO FAZER PRO MODELO ENTRAR EM UMA MARCA...
 	}
+
+	private static void relatorioGerencial() {
+		System.out.println();
+		System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+		System.out.println("              RELATÓRIO GERENCIAL               ");
+		System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+
+		for (Carro c : vagas) {
+			if (c != null) {
+				System.out.println("Placa do carro: " + c.getPlaca() + " Modelo: " + c.getModelo().getNome()
+						+ " Marca: " + " FALTA FAZER " + " Valor Pago: " + " FALTA FAZER ");
+			}
+		}
+	}
+
 }
