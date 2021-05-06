@@ -1,6 +1,7 @@
 package Modelagem;
 
 import java.time.LocalDateTime;
+import static java.time.temporal.ChronoUnit.*;
 
 public class Carro {
 
@@ -113,4 +114,19 @@ public class Carro {
 		this.horaSaida = horaSaida;
 	}
 
+	public void set2HoraSaida(int dia, int mes, int ano, int hora, int minuto) {
+		this.horaSaida = LocalDateTime.of(ano, mes, dia, hora, minuto);
+	}
+
+	public float saidaCarro() {
+		long duracao = horaEntrada.until(horaSaida, MINUTES);
+
+		if (duracao <= 60) {
+			this.valor = 10;
+		} else {
+			duracao = duracao - 60;
+			this.valor = 10 + ((duracao / 15) * 2);
+		}
+		return valor;
+	}
 }
