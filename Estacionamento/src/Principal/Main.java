@@ -16,7 +16,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		// -> Variáveis
-		int opcao;
+		int opcao, opcaoMarca;
 		Scanner teclado = new Scanner(System.in);
 
 		// -> dummy data marcas
@@ -24,6 +24,11 @@ public class Main {
 		final Marca m2 = new Marca("bmw");
 		final Marca m3 = new Marca("mercedes");
 		final Marca m4 = new Marca("audi");
+
+		final Carro c1 = new Carro("AAAA-888");
+		final Carro c2 = new Carro("AAAA-777");
+		final Carro c3 = new Carro("AAAA-666");
+		final Carro c4 = new Carro("AAAA-555");
 
 		m1.adicionarModelo("sandero");
 		m1.adicionarModelo("duster");
@@ -42,9 +47,11 @@ public class Main {
 			System.out.println("\n=-=-= Menu de opcoes =-=-=\n");
 			System.out.println(" 1 - Cadastrar Entrada do Carro");
 			System.out.println(" 2 - Efetuar Saída do Carro");
-			System.out.println(" 3 - Cadastrar marca");
-			System.out.println(" 4 - Cadastrar modelo");
-			System.out.println(" 5 - Relatório gerencial");
+			System.out.println(" 3 - Listar Marcas");
+			System.out.println(" 4 - Listar Modelos");
+			System.out.println(" 5 - Cadastrar marca");
+			System.out.println(" 6 - Cadastrar modelo");
+			System.out.println(" 7 - Relatório gerencial");
 			System.out.println(" 0 - Sair do Programa");
 			System.out.print(" >> ");
 			opcao = teclado.nextInt();
@@ -58,12 +65,39 @@ public class Main {
 					saidaCarro();
 					break;
 				case 3:
-					cadastrarMarca();
+					System.out.println();
+					System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+					System.out.println("Há " + marcas.size() + " marca(s), estão são:");
+
+					for (int i = 0; i < marcas.size(); i++) {
+						System.out.println(i + " -> " + marcas.get(i).getNome());
+					}
+					System.out.println();
 					break;
 				case 4:
-					cadastrarModelo();
+					System.out.println();
+					System.out.println("Qual é a marca do seu carro? (digite o número)");
+					for (int i = 0; i < marcas.size(); i++) {
+						System.out.println(i + " -> " + marcas.get(i).getNome());
+					}
+					System.out.print(">> ");
+					opcaoMarca = teclado.nextInt();
+					System.out.print("\n");
+					modelo = marcas.get(opcaoMarca).getModelo();
+					System.out.println();
+					System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+					System.out.println("O(s) modelo(s) dentro dessa marca são:");
+					for (int i = 0; i < modelo.size(); i++) {
+						System.out.println(i + " -> " + modelo.get(i).getNome());
+					}
 					break;
 				case 5:
+					cadastrarMarca();
+					break;
+				case 6:
+					cadastrarModelo();
+					break;
+				case 7:
 					System.out.println("FALTA FAZER - Opção 5 escolhida");
 					break;
 				case 0:
@@ -80,34 +114,16 @@ public class Main {
 		Scanner teclado = new Scanner(System.in);
 
 		System.out.println();
-		System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
-		System.out.println("Há " + marcas.size() + " marcas, estão são:");
-
-		for (int i = 0; i < marcas.size(); i++) {
-			System.out.println(i + " -> " + marcas.get(i).getNome());
-		}
-
-		System.out.println();
-		System.out.println("Qual é a marca do seu carro que foi listado acima (digite o número)");
+		System.out.println("Qual é a marca do seu carro? (digite o número)");
 		System.out.print(">> ");
 		opcaoMarca = teclado.nextInt();
 		Marca opcao = marcas.get(opcaoMarca);
 		System.out.print("\n");
-
-		if (opcaoMarca >= 0 && opcaoMarca < marcas.size()) {
-			System.out.println("A marca que você escolheu é " + marcas.get(opcaoMarca).getNome());
-		} else {
-			System.out.println();
-			System.out.println(" - Número inválido, digite novamente o número - ");
-			System.out.print(">> ");
-			opcaoMarca = teclado.nextInt();
-			System.out.print("\n");
-		}
+		System.out.println("A marca que você escolheu é " + marcas.get(opcaoMarca).getNome());
 
 		modelo = marcas.get(opcaoMarca).getModelo();
 		System.out.println();
 		System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
-		System.out.println("Há " + modelo.size() + " modelo(s)");
 		System.out.println("O(s) modelo(s) dentro dessa marca são:");
 
 		for (int i = 0; i < modelo.size(); i++) {
@@ -115,31 +131,40 @@ public class Main {
 		}
 
 		System.out.println();
-		System.out.println("Você deseja incluir um novo modelo?");
+		System.out.println("Você deseja incluir um novo modelo para esta marca?");
 		System.out.println("Digite (1) para sim");
 		System.out.println("Digite (2) para não");
 		System.out.print(">> ");
 		opcaoNewModelo = teclado.nextInt();
 		System.out.print("\n");
 
+		teclado.nextLine();
 		switch (opcaoNewModelo) {
 			case 1:
-				System.out.println("Digite o nome do modelo");
+				System.out.println("Então digite o nome do modelo");
 				System.out.print(">> ");
-				newModelo = teclado.next();
+				newModelo = teclado.nextLine();
 				System.out.print("\n");
 				System.out.println("Você digitou " + newModelo + " como novo modelo");
 				opcao.adicionarModelo(newModelo);
 				break;
 			case 2:
-				break;
-
+				System.out.println();
+				System.out.println("Então escolha o modelo dentro dos existentes");
+				for (int i = 0; i < modelo.size(); i++) {
+					System.out.println(i + " -> " + modelo.get(i).getNome());
+				}
+				System.out.print(">> ");
+				int escolhaModelo = teclado.nextInt();
+				System.out.print("\n");
+				System.out.println("Você escolheu o modelo " + modelo.get(escolhaModelo).getNome());
 		}
-		//TODO SELECIONE QUAL O SEU MODELO ENTÃO...
+		//TODO FAZER CADASTRO DO HORARIO DA ENTRADA DO CARRO
 	}
 
 	private static float saidaCarro() {
 		float preco = 0;
+		//TODO FAZER CADASTRO DO HORARIO DA SAIDA DO CARRO
 		return preco;
 	}
 
@@ -162,16 +187,27 @@ public class Main {
 	private static void cadastrarModelo() {
 		Scanner teclado = new Scanner(System.in);
 		String newModelo;
+		int marcaEscolhida;
 
+		System.out.println();
+		System.out.println("=-=-=-= LISTA DE MARCAS =-=-=-=");
+		for (int i = 0; i < marcas.size(); i++) {
+			System.out.println(i + " -> " + marcas.get(i).getNome());
+		}
+		System.out.println("Em qual das marcas você quer cadastrar o modelo?");
+		System.out.print(">> ");
+		marcaEscolhida = teclado.nextInt();
+
+		teclado.nextLine();
 		System.out.println();
 		System.out.println("=-=-=-= Cadastrar Modelo =-=-=-=");
 		System.out.println("Modelo: ");
 		System.out.print(">> ");
-		newModelo = teclado.next();
-		Marca opcao = marcas.get(0);
+		newModelo = teclado.nextLine();
+		Marca opcao = marcas.get(marcaEscolhida);
 		opcao.adicionarModelo(newModelo);
 		System.out.print("O modelo " + newModelo + " foi adicionada com sucesso");
-		
-		//TODO COMO FAZER PRO MODELO ENTRAR EM UMA MARCA...
+
+		// TODO COMO FAZER PRO MODELO ENTRAR EM UMA MARCA...
 	}
 }
