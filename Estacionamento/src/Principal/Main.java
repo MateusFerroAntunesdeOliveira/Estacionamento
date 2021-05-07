@@ -1,8 +1,6 @@
 package Principal;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -294,6 +292,7 @@ public class Main {
 				System.out.println("A saida do carro foi: " + saida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
 				vagas[numRetirada].setHoraSaida(saida);
 				System.out.println("Valor a ser pago: " + vagas[numRetirada].saidaCarro());
+				historico.add(vagas[numRetirada]);
 				vagas[numRetirada] = null;
 				break;
 			case 2:
@@ -320,6 +319,7 @@ public class Main {
 				System.out.println(saidaDia + "/" + saidaMes + "/" + saidaAno + " - " + saidaHora + ":" + saidaMinuto);
 				vagas[numRetirada].set2HoraSaida(saidaDia, saidaMes, saidaAno, saidaHora, saidaMinuto);
 				System.out.println("Valor a ser pago: " + vagas[numRetirada].saidaCarro());
+				historico.add(vagas[numRetirada]);
 				vagas[numRetirada] = null;
 				break;
 			default:
@@ -368,22 +368,37 @@ public class Main {
 		Marca opcao = marcas.get(marcaEscolhida);
 		opcao.adicionarModelo(newModelo);
 		System.out.print("O modelo " + newModelo + " foi adicionada com sucesso");
-
-		// TODO COMO FAZER PRO MODELO ENTRAR EM UMA MARCA...
 	}
 
 	private static void relatorioGerencial() {
+		Scanner teclado = new Scanner(System.in);
+		String dataSelecionada, dataSaida;
+
 		System.out.println();
 		System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
 		System.out.println("              RELATÓRIO GERENCIAL               ");
 		System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+		System.out.println();
+		System.out.println("Data: (utilize o formato dd/MM/aaaa)");
+		System.out.print(">> ");
+		dataSelecionada = teclado.nextLine();
 
-		for (Carro c : vagas) {
-			if (c != null) {
-				System.out.println("Placa do carro: " + c.getPlaca() + " Modelo: " + c.getModelo().getNome()
-						+ " Marca: " + " FALTA FAZER " + " Valor Pago: " + " FALTA FAZER ");
+		for (Carro c : historico) {
+			dataSaida = c.getHoraSaida().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+			if (dataSelecionada.equals(dataSaida)) {
+				System.out.println();
+				System.out.println("Placa: " + c.getPlaca());
+				for (Marca marca : marcas) {
+					for (Modelo modelo : marca.getModelo()) {
+						if (c.getModelo().getNome().equals(modelo.getNome())) {
+							System.out.println("Marca: " + marca.getNome() + " - " + "Modelo: " + modelo.getNome());
+						}
+					}
+				}
+				System.out.println("Data de entrada: " + c.getHoraEntrada().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
+				System.out.println("Data de saída: " + c.getHoraSaida().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
+				System.out.println("Valor pago: " + c.getValor());
 			}
 		}
 	}
-
 }

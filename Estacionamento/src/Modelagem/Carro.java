@@ -18,8 +18,8 @@ public class Carro {
 		placa = "Sem placa";
 		valor = 0;
 		modelo = new Modelo();
-		horaEntrada = LocalDateTime.of(1900, 1, 1, 12, 0, 0);
-		horaSaida = LocalDateTime.of(1900, 1, 1, 12, 0, 0);
+		horaEntrada = LocalDateTime.of(2010, 1, 1, 12, 0, 0);
+		horaSaida = LocalDateTime.of(2010, 1, 1, 12, 0, 0);
 	}
 
 	public Carro(String placa) {
@@ -27,8 +27,8 @@ public class Carro {
 		this.placa = placa;
 		valor = 0;
 		modelo = new Modelo();
-		horaEntrada = LocalDateTime.of(1900, 1, 1, 12, 0, 0);
-		horaSaida = LocalDateTime.of(1900, 1, 1, 12, 0, 0);
+		horaEntrada = LocalDateTime.of(2010, 1, 1, 12, 0, 0);
+		horaSaida = LocalDateTime.of(2010, 1, 1, 12, 0, 0);
 	}
 
 	public Carro(String placa, float valor) {
@@ -36,8 +36,8 @@ public class Carro {
 		this.placa = placa;
 		this.valor = valor;
 		modelo = new Modelo();
-		horaEntrada = LocalDateTime.of(1900, 1, 1, 12, 0, 0);
-		horaSaida = LocalDateTime.of(1900, 1, 1, 12, 0, 0);
+		horaEntrada = LocalDateTime.of(2010, 1, 1, 12, 0, 0);
+		horaSaida = LocalDateTime.of(2010, 1, 1, 12, 0, 0);
 	}
 
 	public Carro(String placa, Modelo modelo) {
@@ -45,8 +45,8 @@ public class Carro {
 		this.placa = placa;
 		valor = 0;
 		this.modelo = modelo;
-		horaEntrada = LocalDateTime.of(1900, 1, 1, 12, 0, 0);
-		horaSaida = LocalDateTime.of(1900, 1, 1, 12, 0, 0);
+		horaEntrada = LocalDateTime.of(2010, 1, 1, 12, 0, 0);
+		horaSaida = LocalDateTime.of(2010, 1, 1, 12, 0, 0);
 	}
 
 	public Carro(String placa, float valor, Modelo modelo) {
