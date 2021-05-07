@@ -130,7 +130,7 @@ public class Main {
 	}
 
 	private static void entradaCarro() {
-		Carro novoCarro = new Carro("0000");
+		Carro novoCarro = new Carro("AAAA-000");
 		int opcaoMarca, opcaoNewModelo;
 		String newModelo;
 		Scanner teclado = new Scanner(System.in);
