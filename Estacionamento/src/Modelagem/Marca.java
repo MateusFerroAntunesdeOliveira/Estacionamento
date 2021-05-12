@@ -44,4 +44,9 @@ public class Marca {
 		Modelo novoModelo = new Modelo(nomeModelo);
 		alModelo.add(novoModelo);
 	}
+
+	@Override
+	public String toString() {
+		return "Marca: " + nome + " que contém os modelo(s): " + alModelo;
+	}
 }

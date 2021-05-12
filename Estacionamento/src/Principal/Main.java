@@ -3,6 +3,7 @@ package Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 import Modelagem.Carro;
@@ -122,6 +123,7 @@ public class Main {
 				case 0:
 					System.exit(0);
 				default:
+					System.out.println("Escolha inválida, tente novamente");
 					break;
 			}
 		} while (opcao != 0);
@@ -129,9 +131,10 @@ public class Main {
 		teclado.close();
 	}
 
+	// -> Entrada do Carro
 	private static void entradaCarro() {
 		Carro novoCarro = new Carro("AAAA-000");
-		int opcaoMarca, opcaoNewModelo;
+		int opcaoNewModelo;
 		String newModelo;
 		Scanner teclado = new Scanner(System.in);
 		int y = 0;
@@ -144,37 +147,83 @@ public class Main {
 		}
 		int total = t - y;
 
+		// -> Vagas no sistema
 		System.out.println();
+		System.out.println("=-=-=-=-=-=-= ESTACIONAMENTO =-=-=-=-=-=-=");
 		System.out.println("Número de vagas ocupadas: " + y);
 		System.out.println("Número de vagas disponíveis: " + total);
 
+		// -> Placa do carro
 		System.out.println();
-		System.out.println("Qual é a placa do seu carro? (digite neste padrão ZZZZ-999)");
+		System.out.println("Qual é a placa do seu carro? (digite neste padrão AAAA-111)");
 		System.out.print(">> ");
 		String placaCarro = teclado.nextLine();
 		System.out.println("Placa digitada: " + placaCarro);
 		novoCarro.setPlaca(placaCarro);
 
+		// -> Marcas já cadastradas no sistema
+		System.out.println();
+		System.out.println("As marcas já cadastradas no sistema são: ");
+		for (Marca marca : marcas) {
+			System.out.println(" -> " + marca.getNome());
+		}
+		// -> Adicionar mais marcas no sistema
+		System.out.println();
+		System.out.println("Você quer adicionar uma nova marca?");
+		System.out.println("(1) SIM");
+		System.out.println("(2) NÃO");
+		System.out.print(">> ");
+		int newMarcaAddOption = teclado.nextInt();
+		switch (newMarcaAddOption) {
+			case 1:
+				System.out.println();
+				System.out.println("Digite então o nome da marca: ");
+				System.out.print(">> ");
+				teclado.nextLine();
+				String newMarcaAddName = teclado.nextLine();
+
+				boolean contemMarca = false;
+				for (Marca marca : marcas) {
+					if (marca.getNome().toLowerCase().equals(newMarcaAddName.toLowerCase())) {
+						System.out.println("Já existe uma marca igual");
+						contemMarca = true;
+						break;
+					}
+				}
+
+				if (!contemMarca) {
+					Marca m6 = new Marca(newMarcaAddName);
+					marcas.add(m6);
+					System.out.println();
+					System.out.println("A marca " + newMarcaAddName + " foi adicionada com sucesso");
+				}
+				break;
+			case 2:
+				System.out.println();
+				System.out.println("Então continue selecionando a marca do seu carro...");
+				break;
+		}
+		// -> Escolha da marca pro Carro
 		System.out.println();
 		System.out.println("Qual é a marca do seu carro? (digite o número)");
 		for (int i = 0; i < marcas.size(); i++) {
 			System.out.println(i + " -> " + marcas.get(i).getNome());
 		}
 		System.out.print(">> ");
-		opcaoMarca = teclado.nextInt();
+		int opcaoMarca = teclado.nextInt();
 		Marca opcao = marcas.get(opcaoMarca);
 		System.out.print("\n");
 		System.out.println("A marca que você escolheu é " + marcas.get(opcaoMarca).getNome());
 
+		// -> Modelos dentro de determinada marca
 		modelo = marcas.get(opcaoMarca).getModelo();
 		System.out.println();
 		System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
-		System.out.println("O(s) modelo(s) dentro dessa marca são:");
-
+		System.out.println("Os modelos já cadastrados dentro dessa marca são:");
 		for (int i = 0; i < modelo.size(); i++) {
 			System.out.println(i + " -> " + modelo.get(i).getNome());
 		}
-
+		// -> Adicionar modelo dentro de determinada marca
 		System.out.println();
 		System.out.println("Você deseja incluir um novo modelo para esta marca?");
 		System.out.println("Digite (1) para sim");
@@ -182,7 +231,6 @@ public class Main {
 		System.out.print(">> ");
 		opcaoNewModelo = teclado.nextInt();
 		System.out.print("\n");
-
 		teclado.nextLine();
 		switch (opcaoNewModelo) {
 			case 1:
@@ -209,6 +257,7 @@ public class Main {
 				break;
 		}
 
+		// -> Hora de Entrada do Carro
 		System.out.println();
 		System.out.println("Qual horário da entrada do carro: ");
 		System.out.println("(1) Entrada agora                 ");
@@ -216,12 +265,13 @@ public class Main {
 		System.out.print(">> ");
 		int tipoEntrada = teclado.nextInt();
 		System.out.println();
-
+		// -> Tipos de Entrada
 		switch (tipoEntrada) {
 			case 1:
 				System.out.println();
 				System.out.println("A entrada do carro foi: "
-						+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
+						+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")) + "\nMarca: "
+						+ marcas.get(opcaoMarca).getNome());
 				novoCarro.setHoraEntrada(LocalDateTime.now());
 				break;
 			case 2:
@@ -253,6 +303,8 @@ public class Main {
 			default:
 				break;
 		}
+
+		// -> Adiciona o novoCarro na próxima vaga disponível
 		int lastVaga = 0;
 		for (Carro c : vagas) {
 			if (c != null) {
@@ -262,10 +314,12 @@ public class Main {
 		vagas[lastVaga] = novoCarro;
 	}
 
+	// -> Saida do Carro
 	private static float saidaCarro() {
 		Scanner teclado = new Scanner(System.in);
 		float preco = 0;
 
+		// -> Escolha do Carro a ser removido
 		for (int i = 0; i < vagas.length; i++) {
 			if (vagas[i] != null) {
 				System.out.println("(" + i + ") " + vagas[i].getPlaca() + " - " + vagas[i].getModelo().getNome());
@@ -276,7 +330,8 @@ public class Main {
 		System.out.print(">> ");
 		int numRetirada = teclado.nextInt();
 		System.out.println();
-		
+
+		// -> Escolha do Horário da saída do Carro
 		System.out.println();
 		System.out.println("Qual horário da saída do carro:  ");
 		System.out.println("(1) Saída agora                  ");
@@ -284,12 +339,12 @@ public class Main {
 		System.out.print(">> ");
 		int tipoSaida = teclado.nextInt();
 		System.out.println();
-
 		switch (tipoSaida) {
 			case 1:
 				System.out.println();
 				LocalDateTime saida = LocalDateTime.now();
-				System.out.println("A saida do carro foi: " + saida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
+				System.out.println(
+						"A saida do carro foi: " + saida.format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
 				vagas[numRetirada].setHoraSaida(saida);
 				System.out.println("Valor a ser pago: " + vagas[numRetirada].saidaCarro());
 				historico.add(vagas[numRetirada]);
@@ -329,6 +384,7 @@ public class Main {
 		return preco;
 	}
 
+	// -> Cadastro da Marca
 	private static void cadastrarMarca() {
 		Scanner teclado = new Scanner(System.in);
 		String marca;
@@ -345,6 +401,7 @@ public class Main {
 		System.out.print("A marca " + marca + " foi adicionada com sucesso");
 	}
 
+	// -> Cadastro do Modelo
 	private static void cadastrarModelo() {
 		Scanner teclado = new Scanner(System.in);
 		String newModelo;
@@ -370,9 +427,11 @@ public class Main {
 		System.out.print("O modelo " + newModelo + " foi adicionada com sucesso");
 	}
 
+	// -> Relatório Gerencial (Recibo diário)
 	private static void relatorioGerencial() {
 		Scanner teclado = new Scanner(System.in);
 		String dataSelecionada, dataSaida;
+		boolean registro = false;
 
 		System.out.println();
 		System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
@@ -382,6 +441,8 @@ public class Main {
 		System.out.println("Data: (utilize o formato dd/MM/aaaa)");
 		System.out.print(">> ");
 		dataSelecionada = teclado.nextLine();
+
+		Collections.sort(historico);
 
 		for (Carro c : historico) {
 			dataSaida = c.getHoraSaida().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -395,10 +456,17 @@ public class Main {
 						}
 					}
 				}
-				System.out.println("Data de entrada: " + c.getHoraEntrada().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
-				System.out.println("Data de saída: " + c.getHoraSaida().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
+				System.out.println("Data de entrada: "
+						+ c.getHoraEntrada().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
+				System.out.println(
+						"Data de saída: " + c.getHoraSaida().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")));
 				System.out.println("Valor pago: " + c.getValor());
+				registro = true;
 			}
+		}
+		if (!registro) {
+			System.out.println();
+			System.out.println("Nenhum registro na data selecionada");
 		}
 	}
 }

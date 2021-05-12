@@ -1,9 +1,11 @@
 package Modelagem;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import static java.time.temporal.ChronoUnit.*;
 
-public class Carro {
+public class Carro implements Comparable<Carro>{
 
 	// -> Inicialização
 	private String placa;
@@ -128,5 +130,15 @@ public class Carro {
 			this.valor = 10 + ((duracao / 15) * 2);
 		}
 		return valor;
+	}
+
+	@Override
+	public String toString() {
+		return "Placa: " + placa + " \nModelo " + modelo + " \nEntrada no estacionamento: " + horaEntrada.format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm"));
+	}
+
+	@Override
+	public int compareTo(Carro compCarro) {
+		return this.horaEntrada.compareTo(compCarro.getHoraEntrada());
 	}
 }
